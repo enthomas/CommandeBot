@@ -9,7 +9,7 @@ invalid_input = "Je n'ai pas compris, essaie encore."
 inform_stop = "Tu peux annuler à tout moment avec la commande /stop"
 ask_mdp = "Quel est le mot de passe ?"
 mdp = "658390"
-chgmt_adresse = "Si tu t'es trompé fais /adresse pour modifier ton adresse."
+termine = "C'est on ta commande est passée ! Si t'as un soucis hésites pas à faire /sos"
 
 empty_user = { "prénom" : "",
                "nom" : "",
@@ -18,7 +18,7 @@ empty_user = { "prénom" : "",
                "team" : "",
                "commande" : False,
                "répartit" : False,
-               "livre" : True,
+               "livre" : False,
                "crepes" : "",
                "nombre" : 0,
                "créneau" : "",
@@ -42,15 +42,13 @@ ask_adresse = [ "Ton adresse ? (numéro + nom de rue)",
                 "Et un numéro de téléphone pour quand on est en bas de chez toi (promis on les garde pas) ?",
                 "Parfait je note tout ça !"]
 
-RUE, CP, VILLE, COMP, NUM, NOTE = range(6)
-
 promos = [ "1A", "2A", "3A"]
 teams = ["Team Bordeaux", "Team Talence"]
 possibilités = ["Crêpes au chocolat 🍫", "Crêpes au sucre 🍭", "Crêpes à la confiture 🍑", "Crêpes au miel 🍯"]
 creneaux = ["13h-15h", "15h-17h"]
 prix = 0.5
 
-CREPES, NB, CRENEAU, ADRESSE, TEL = range(5)
+CREPES, NB, CRENEAU, RUE, CP, VILLE, COMP, NUM = range(8)
 
 id_BDAmour = -430587684
 ADMIN, ADMIN2 = range(2)

@@ -43,7 +43,7 @@ def rep2_admin(update, context):
     context.bot_data["users"][user_id]["team"] = user_input
     return ConversationHandler.END
 
-def adresse_to_string(user_date):
+def adresse_to_string(user_data):
     try : return "{}\n{}\n{}\nCompléments : {}".format(user_data["rue"],
                                                        user_data["code_postal"],
                                                        user_data["ville"],
@@ -59,6 +59,11 @@ def init_commande(update, context):
         context.bot_data["attribuees_teamT"] = []
         context.bot_data["livrees"] = []
     return ConversationHandler.END
+
+def repart_to_string(user_data):
+    try : return "{} {}\n{}".format(user_data["prénom"],
+                                    user_data["nom"],
+                                    adresse_to_string(user_data))
 
 ##########################
 

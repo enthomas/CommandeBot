@@ -66,19 +66,6 @@ start_handler = ConversationHandler(
 
 dispatcher.add_handler(start_handler)
 
-adresse_handler = ConversationHandler(
-    entry_points = [CommandHandler("adresse", adresse)],
-    states = {RUE : [stop_handler, MessageHandler(Filters.text, rue)],
-              CP : [stop_handler, MessageHandler(Filters.text, code_postal)],
-              VILLE : [stop_handler, MessageHandler(Filters.text, ville)],
-              COMP : [stop_handler, MessageHandler(Filters.text, complements)],
-              NUM : [stop_handler, MessageHandler(Filters.text, numero)]},
-    fallbacks = [stop_handler],
-    name = "adresse_handler",
-    persistent = True)
-
-dispatcher.add_handler(adresse_handler)
-
 admin_handler = ConversationHandler(
     entry_points = [CommandHandler("admin", admin)],
     states = {ADMIN : [stop_handler, MessageHandler(Filters.text, rep_admin)],
@@ -88,6 +75,24 @@ admin_handler = ConversationHandler(
     persistent = True)
 
 dispatcher.add_handler(admin_handler)
+
+commande_handler = ConversationHandler(
+    entry_points = [CommandHandler("commander", commander)],
+    states = {CREPES : [stop_handler, MessageHandler(Filters.text, crepes)],
+              NB : [stop_handler, MessageHandler(Filters.text, quantite)],
+              CRENEAU : [stop_handler, MessageHandler(Filters.text, moment)],
+              RUE : [stop_handler, MessageHandler(Filters.text, rue)],
+              CP : [stop_handler, MessageHandler(Filters.text, code_postal)],
+              VILLE : [stop_handler, MessageHandler(Filters.text, ville)],
+              COMP : [stop_handler, MessageHandler(Filters.text, complements)],
+              NUM : [stop_handler, MessageHandler(Filters.text, numero)]},
+    fallbacks = [stop_handler],
+    name = "commande_handler",
+    persistent = True)
+
+dispatcher.add_handler(commande_handler)
+
+dispatcher.add_handler(CallbackQueryHandler(button))
 
 #autres éléments communs à tous les bots
 updater.start_polling()
@@ -110,8 +115,6 @@ today_handler = ConversationHandler(
     persistent = True)
 
 dispatcher.add_handler(today_handler)
-
-dispatcher.add_handler(CallbackQueryHandler(button))
 
 dispatcher.add_handler(CommandHandler("recap", recap))
 dispatcher.add_handler(CommandHandler("game_recap", game_recap))
