@@ -46,6 +46,11 @@ RUE, CP, VILLE, COMP, NUM, NOTE = range(6)
 
 promos = [ "1A", "2A", "3A"]
 teams = ["Team Bordeaux", "Team Talence"]
+possibilités = ["Crêpes au chocolat 🍫", "Crêpes au sucre 🍭", "Crêpes à la confiture 🍑", "Crêpes au miel 🍯"]
+creneaux = ["13h-15h", "15h-17h"]
+prix = 0.5
+
+CREPES, NB, CRENEAU, ADRESSE, TEL = range(5)
 
 id_BDAmour = -430587684
 ADMIN, ADMIN2 = range(2)
