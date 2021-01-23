@@ -115,13 +115,31 @@ livraison_handler = ConversationHandler(
 
 dispatcher.add_handler(livraison_handler)
 
-dispatcher.add_handler(CommandHandler("recap_team", recap_team))
+abandon_handler = ConversationHandler(
+    entry_points = [CommandHandler("abandonner", abandonner)],
+    states = {LIVB : [stop_handler, MessageHandler(Filters.text, livB)],
+              LIVT : [stop_handler, MessageHandler(Filters.text, livT)],
+              CONFB : [stop_handler, MessageHandler(Filters.text, abandB)],
+              CONFT : [stop_handler, MessageHandler(Filters.text, abandT)]},
+    fallbacks = [stop_handler],
+    name = "abandon_handler",
+    persistent = True)
 
+dispatcher.add_handler(abandon_handler)
+
+dispatcher.add_handler(CommandHandler("recap_team", recap_team))
+dispatcher.add_handler(CommandHandler("carte", carte))
+dispatcher.add_handler(CommandHandler("help", help))
+dispatcher.add_handler(CommandHandler("sos", sos))
+dispatcher.add_handler(CommandHandler("help_livreur", help_livreur))
+
+#ça c'est pour moi pour vérifier
 dispatcher.add_handler(CommandHandler("info", info))
 dispatcher.add_handler(CommandHandler("init", init_commande))
 dispatcher.add_handler(CommandHandler("see_commandes", see_commandes))
 dispatcher.add_handler(CommandHandler("see_nonattrib", see_nonattrib))
 dispatcher.add_handler(CommandHandler("see_attribB", see_attribB))
+dispatcher.add_handler(MessageHandler(Filters.photo, photoecho))
 
 #autres éléments communs à tous les bots
 updater.start_polling()
@@ -194,7 +212,6 @@ def restart(update, context):
 
 dispatcher.add_handler(CommandHandler('reboot', restart))
 
-dispatcher.add_handler(MessageHandler(Filters.photo, photoecho))
 dispatcher.add_handler(MessageHandler(Filters.audio, audioecho))
 dispatcher.add_handler(MessageHandler(Filters.video, videoecho))
 dispatcher.add_handler(MessageHandler(Filters.text, transfer))

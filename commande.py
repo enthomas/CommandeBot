@@ -9,9 +9,12 @@ def commander(update, context):
     user_id = update.effective_user.id
     chat_id = update.effective_chat.id
 
-    if not context.bot_data["users"][user_id]["commande"] :
+    if context.bot_data["nb_commandes"] > max_crepes :
+        update.message.reply_text(too_much)
+        context.bot.send_photo(chat_id=chat_id, photo=photo_team)
+    elif not context.bot_data["users"][user_id]["commande"] :
         keyboard = [[KeyboardButton(choix)] for choix in possibilités]
-        update.message.reply_text("Quelles crêpes veux tu ? 😀", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
+        update.message.reply_text("Quelles crêpes veux-tu ? 😀", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
         return CREPES
     else :
         update.message.reply_text(already_commande)
@@ -111,7 +114,7 @@ def numero(update, context):
     user_id = update.effective_user.id
     chat_id = update.effective_chat.id
     user_input = update.message.text.strip().replace("\n", " ")
-    
+
     if user_input == "":
         update.message.reply_text(invalid_input)
         return NUM
@@ -123,6 +126,7 @@ def numero(update, context):
     context.bot_data["users"][user_id]["commande"] = True
     context.bot_data["commandes"].append(user_id)
     context.bot_data["non_attribuees"].append(user_id)
+    context.bot_data["nb_commandes"] += context.bot_data["users"][user_id]["nombre"]
 
     missive = repart_to_string(context.bot_data["users"][user_id])
     #affiche des boutons sous la photo sur lesquels on peut cliquer
@@ -193,6 +197,7 @@ def annule(update, context):
         if user_id in context.bot_data["attribuees_teamT"] :
             context.bot_data["attribuees_teamT"].remove(user_id)
         update.message.reply_text("C'est bon ta commande est annulée")
+        context.bot_data["nb_commandes"] -= context.bot_data["users"][user_id]["nombre"]
         context.bot.send_message(chat_id=id_BDAmour, text=annulation_to_string(context.bot_data["users"][user_id]), reply_markup=ReplyKeyboardRemove())
         return ConversationHandler.END
     else :

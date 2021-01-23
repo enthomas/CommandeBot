@@ -59,6 +59,7 @@ def init_commande(update, context):
         context.bot_data["attribuees_teamB"] = []
         context.bot_data["attribuees_teamT"] = []
         context.bot_data["livrees"] = []
+        context.bot_data["nb_commandes"] = 0
         update.message.reply_text("C'est bon !")
     return ConversationHandler.END
 
@@ -69,9 +70,10 @@ def repart_to_string(user_data):
     except : return user_data["prénom"]
 
 def commande_to_string(user_data):
-    try : return "{} {}\n--> {}€\n\n{} {}\n{}\nTel : {}".format(user_data["nombre"],
+    try : return "{} {}\n--> {}€\n{}\n\n{} {}\n{}\nTel : {}".format(user_data["nombre"],
                                                       user_data["crepes"],
                                                       (user_data["nombre"]-1)*prix,
+                                                      user_data["créneau"],
                                                       user_data["prénom"],
                                                       user_data["nom"],
                                                       adresse_to_string(user_data),
@@ -111,9 +113,14 @@ def see_commandes(update, context):
 def see_nonattrib(update, context):
     user_id = update.effective_user.id
     if context.bot_data["users"][user_id]["admin"] == True :
-        print("Non attrib :")
-        for id in context.bot_data["non_attribuees"] :
-            print(id)
+        if len(context.bot_data["non_attribuees"]) != 0 :
+            print("Non attrib :")
+            for id in context.bot_data["non_attribuees"] :
+                print(id)
+                missive = repart_to_string(context.bot_data["users"][id])
+                #affiche des boutons sous la photo sur lesquels on peut cliquer
+                keyboard = [[InlineKeyboardButton("Prendre pour ma team", callback_data="OK_" + str(id))]]
+                context.bot.send_message(chat_id=id_BDAmour, text=missive, reply_markup=InlineKeyboardMarkup(keyboard))
     return ConversationHandler.END
 
 def see_attribB(update, context):
@@ -124,7 +131,46 @@ def see_attribB(update, context):
             print(id)
     return ConversationHandler.END
 
+def photoecho(update, context):
+    #Displays infos about a received photo in the console, no user feedback
 
+    chat_id = update.effective_chat.id
+    user_id = update.effective_user.id
+
+    print("[photoecho] user {} sent a picture, which characteristics are :".format(user_id))
+    fsiz = 0
+    for photosiz in update.message.effective_attachment:
+        print("file size : " + str(photosiz.file_size))
+        print("file id : " + photosiz.file_id)
+        if photosiz.file_size>fsiz:
+            fid = photosiz.file_id
+            fsiz = photosiz.file_size
+    #context.bot.send_message(chat_id=id_BDAmour, text=context.bot_data["users"][user_id]["prénom"]+" envoie :")
+    #context.bot.send_photo(chat_id=id_BDAmour, photo=fid)
+    # context.bot_data["photo_file_id"] = fid
+    # context.bot.send_photo(chat_id, fid)
+
+def carte(update, context):
+    chat_id = update.effective_chat.id
+    user_id = update.effective_user.id
+    context.bot.send_photo(chat_id=chat_id, photo=map)
+    return ConversationHandler.END
+
+def help(update, context):
+    update.message.reply_text(aide_commande)
+    return ConversationHandler.END
+
+def help_livreur(update, context):
+    user_id = update.effective_user.id
+    if not context.bot_data["users"][user_id]["admin"] :
+        update.message.reply_text(tututut)
+    else :
+        update.message.reply_text(aide_livreur)
+    return ConversationHandler.END
+
+def sos(update, context):
+    update.message.reply_text(mayday)
+    return ConversationHandler.END
 ##########################
 """
 def remove_accents(input_str):
@@ -210,25 +256,6 @@ def pause(update, context):
         for id in context.bot_data["users"] :
             context.bot.send_message(chat_id=id, text=message)
     return ConversationHandler.END
-
-def photoecho(update, context):
-    #Displays infos about a received photo in the console, no user feedback
-
-    chat_id = update.effective_chat.id
-    user_id = update.effective_user.id
-
-    print("[photoecho] user {} sent a picture, which characteristics are :".format(user_id))
-    fsiz = 0
-    for photosiz in update.message.effective_attachment:
-        #print("file size : " + str(photosiz.file_size))
-        #print("file id : " + photosiz.file_id)
-        if photosiz.file_size>fsiz:
-            fid = photosiz.file_id
-            fsiz = photosiz.file_size
-    context.bot.send_message(chat_id=id_BDAmour, text=context.bot_data["users"][user_id]["prénom"]+" envoie :")
-    context.bot.send_photo(chat_id=id_BDAmour, photo=fid)
-    # context.bot_data["photo_file_id"] = fid
-    # context.bot.send_photo(chat_id, fid)
 
 def audioecho(update, context):
     #Displays infos about a received audio in the console, no user feedback

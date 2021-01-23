@@ -10,15 +10,23 @@ def livraison(update, context):
     chat_id = update.effective_chat.id
 
     if not context.bot_data["users"][user_id]["admin"] :
-        update.message.reply_text("Tututut, cette commande n'est pas faite pour toi 😜\nEssaye plutôt \help pour savoir ce que tu peux faire")
+        update.message.reply_text(tututut)
     elif context.bot_data["users"][user_id]["team"] == "Team Bordeaux" :
-        keyboard = [[KeyboardButton(livraison_to_string(id, context))] for id in context.bot_data["attribuees_teamB"]]
-        update.message.reply_text("Qui as-tu livré ?", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
-        return LIVB
+        if len(context.bot_data["attribuees_teamB"]) > 0 :
+            keyboard = [[KeyboardButton(livraison_to_string(id, context))] for id in context.bot_data["attribuees_teamB"]]
+            update.message.reply_text("Qui as-tu livré ?", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
+            return LIVB
+        else :
+            update.message.reply_text(lst_vide)
+            return ConversationHandler.END
     else :
-        keyboard = [[KeyboardButton(livraison_to_string(id, context))] for id in context.bot_data["attribuees_teamT"]]
-        update.message.reply_text("Qui as-tu livré ?", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
-        return LIVT
+        if len(context.bot_data["attribuees_teamT"]) > 0 :
+            keyboard = [[KeyboardButton(livraison_to_string(id, context))] for id in context.bot_data["attribuees_teamT"]]
+            update.message.reply_text("Qui as-tu livré ?", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
+            return LIVT
+        else :
+            update.message.reply_text(lst_vide)
+            return ConversationHandler.END
 
 def livB(update, context):
     user_id = update.effective_user.id
@@ -97,17 +105,94 @@ def recap_team(update, context):
     chat_id = update.effective_chat.id
 
     if not context.bot_data["users"][user_id]["admin"] :
-        update.message.reply_text("Tututut, cette commande n'est pas faite pour toi 😜\nEssaye plutôt \help pour savoir ce que tu peux faire")
+        update.message.reply_text(tututut)
     elif context.bot_data["users"][user_id]["team"] == "Team Bordeaux" :
-        message = ""
-        for id in context.bot_data["attribuees_teamB"] :
-            message += commande_to_string(context.bot_data["users"][id])
-            message += "\n\n-----------\n\n"
-        update.message.reply_text(message)
+        if len(context.bot_data["attribuees_teamB"]) > 0 :
+            message = ""
+            for id in context.bot_data["attribuees_teamB"] :
+                message += commande_to_string(context.bot_data["users"][id])
+                message += "\n\n-----------\n\n"
+            update.message.reply_text(message)
+        else :
+            update.message.reply_text(lst_vide)
     else :
-        message = ""
-        for id in context.bot_data["attribuees_teamT"] :
-            message += commande_to_string(context.bot_data["users"][id])
-            message += "\n\n-----------\n\n"
-        update.message.reply_text(message)
+        if len(context.bot_data["attribuees_teamT"]) > 0 :
+            message = ""
+            for id in context.bot_data["attribuees_teamT"] :
+                message += commande_to_string(context.bot_data["users"][id])
+                message += "\n\n-----------\n\n"
+            update.message.reply_text(message)
+        else :
+            update.message.reply_text(lst_vide)
     return ConversationHandler.END
+
+def abandonner(update, context):
+    user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
+
+    if not context.bot_data["users"][user_id]["admin"] :
+        update.message.reply_text(tututut)
+    elif context.bot_data["users"][user_id]["team"] == "Team Bordeaux" :
+        if len(context.bot_data["attribuees_teamB"])  > 0 :
+            keyboard = [[KeyboardButton(livraison_to_string(id, context))] for id in context.bot_data["attribuees_teamB"]]
+            update.message.reply_text("Qui veux-tu lâcher ?", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
+            return LIVB
+        else :
+            update.message.reply_text(lst_vide)
+            return ConversationHandler.END
+    else :
+        if len(context.bot_data["attribuees_teamT"]) > 0 :
+            keyboard = [[KeyboardButton(livraison_to_string(id, context))] for id in context.bot_data["attribuees_teamT"]]
+            update.message.reply_text("Qui veux-tu lâcher ?", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
+            return LIVT
+        else :
+            update.message.reply_text(lst_vide)
+            return ConversationHandler.END
+
+def abandB(update, context):
+    user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
+    user_input = update.message.text.strip().replace("\n", " ")
+
+    if user_input[:3] not in ["Oui", "Non"] :
+        update.message.reply_text(invalid_input)
+        return CONFB
+    id_user = int(user_input[5:-1])
+
+    if user_input[:3] == "Oui" :
+        context.bot_data["attribuees_teamB"].remove(id_user)
+        context.bot_data["non_attribuees"].append(id_user)
+        context.bot_data["users"][id_user]["répartit"] = False
+        update.message.reply_text("Ok c'est noté !")
+
+        missive = repart_to_string(context.bot_data["users"][id_user])
+        #affiche des boutons sous la photo sur lesquels on peut cliquer
+        keyboard = [[InlineKeyboardButton("Prendre pour ma team", callback_data="OK_" + str(id_user))]]
+        context.bot.send_message(chat_id=id_BDAmour, text=missive, reply_markup=InlineKeyboardMarkup(keyboard))
+        return ConversationHandler.END
+    else :
+        return abandonner(update, context)
+
+def abandT(update, context):
+    user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
+    user_input = update.message.text.strip().replace("\n", " ")
+
+    if user_input[:3] not in ["Oui", "Non"] :
+        update.message.reply_text(invalid_input)
+        return CONFT
+    id_user = int(user_input[5:-1])
+
+    if user_input[:3] == "Oui" :
+        context.bot_data["attribuees_teamT"].remove(id_user)
+        context.bot_data["non_attribuees"].append(id_user)
+        context.bot_data["users"][id_user]["répartit"] = False
+        update.message.reply_text("Ok c'est noté !")
+
+        missive = repart_to_string(context.bot_data["users"][id_user])
+        #affiche des boutons sous la photo sur lesquels on peut cliquer
+        keyboard = [[InlineKeyboardButton("Prendre pour ma team", callback_data="OK_" + str(id_user))]]
+        context.bot.send_message(chat_id=id_BDAmour, text=missive, reply_markup=InlineKeyboardMarkup(keyboard))
+        return ConversationHandler.END
+    else :
+        return abandonner(update, context)
