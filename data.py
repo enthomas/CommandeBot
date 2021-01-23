@@ -10,6 +10,7 @@ inform_stop = "Tu peux annuler à tout moment avec la commande /stop"
 ask_mdp = "Quel est le mot de passe ?"
 mdp = "658390"
 termine = "C'est on ta commande est passée ! Si t'as un soucis hésites pas à faire /sos"
+already_commande = "Tu as déjà commandé une première fois, donc tu ne peux pas retenter l'expérience. 😕\nIl faut en laisser pour les autres je suis sûr que tu peux comprendre ça ☺️\nEn tout cas merci d'avoir commandé ! 😍"
 
 empty_user = { "prénom" : "",
                "nom" : "",
@@ -52,3 +53,6 @@ CREPES, NB, CRENEAU, RUE, CP, VILLE, COMP, NUM = range(8)
 
 id_BDAmour = -430587684
 ADMIN, ADMIN2 = range(2)
+ANNULE = range(1)
+
+LIVB, LIVT, CONFB, CONFT = range(4)

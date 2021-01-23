@@ -4,15 +4,18 @@ import time
 
 from data import *
 from functions import *
-from adresse import *
 
 def commander(update, context):
     user_id = update.effective_user.id
     chat_id = update.effective_chat.id
 
-    keyboard = [[KeyboardButton(choix)] for choix in possibilités]
-    update.message.reply_text("Quelles crêpes veux tu ? 😀", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
-    return CREPES
+    if not context.bot_data["users"][user_id]["commande"] :
+        keyboard = [[KeyboardButton(choix)] for choix in possibilités]
+        update.message.reply_text("Quelles crêpes veux tu ? 😀", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
+        return CREPES
+    else :
+        update.message.reply_text(already_commande, reply_markup=ReplyKeyboardRemove)
+        return ConversationHandler.END
 
 def crepes(update, context):
     user_id = update.effective_user.id
@@ -155,3 +158,40 @@ def button(update, context):
     valeur = query.data
     query.answer() # avoid hogging the client
     return validation(update, context)
+
+def annuler(update, context):
+    user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
+
+    if context.bot_data["users"][user_id]["commande"] and not context.bot_data["users"][user_id]["livre"] :
+        update.message.reply_text("Voilà ta commande :\n" + commande_to_string(context.bot_data["users"][user_id]), reply_markup=ReplyKeyboardRemove())
+
+        keyboard = [[KeyboardButton(choix)] for choix in ["Oui", "Non"]]
+        update.message.reply_text("Es-tu sûr de vouloir annuler ta commande ?", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
+        return ANNULE
+    else :
+        update.message.reply_text("Tu n'as rien à annuler 😮", reply_markup=ReplyKeyboardRemove())
+        return ConversationHandler.END
+
+def annule(update, context):
+    user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
+    user_input = update.message.text.strip().replace("\n", " ")
+
+    if user_input not in ["Oui", "Non"] :
+        update.message.reply_text(invalid_input)
+        return ANNULE
+
+    if user_input == "Oui" :
+        context.bot_data["users"][user_id]["commande"] = False
+        context.bot_data["users"][user_id]["répartit"] = False
+        context.bot_data["commandes"].remove(user_id)
+        context.bot_data["non_attribuees"].remove(user_id)
+        context.bot_data["attribuees_teamB"].remove(user_id)
+        context.bot_data["attribuees_teamT"].remove(user_id)
+        update.message.reply_text("C'est bon ta commande est annulée")
+        context.bot.send_message(chat_id=id_BDAmour, text=annulation_to_string(context.bot_data["users"][user_id]), reply_markup=ReplyKeyboardRemove())
+        return ConversationHandler.END
+    else :
+        update.message.reply_text("Ok on touche à rien")
+        return ConversationHandler.END

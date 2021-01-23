@@ -64,6 +64,31 @@ def repart_to_string(user_data):
     try : return "{} {}\n{}".format(user_data["prénom"],
                                     user_data["nom"],
                                     adresse_to_string(user_data))
+    except : return user_data["prénom"]
+
+def commande_to_string(user_data):
+    try : return "{} {}\n--> {}€\n\n{} {}\n{}".format(user_data["nombre"],
+                                                      user_data["crepes"],
+                                                      (user_data["nombre"]-1)*prix,
+                                                      user_data["prénom"],
+                                                      user_data["nom"],
+                                                      adresse_to_string(user_data))
+    except : return user_data["prénom"]
+
+def annulation_to_string(user_data):
+    try : return "{} {} a annulé sa commande ({} {})".format(user_data["prénom"],
+                                                             user_data["nom"],
+                                                             user_data["nombre"],
+                                                             user_data["crepes"])
+    except : return user_data["prénom"]
+
+def livraison_to_string(user_id):
+    try : return "{} {} ({} {} --> {}€)".format(context.bot_data["users"][user_id]["prénom"],
+                                                context.bot_data["users"][user_id]["nom"],
+                                                context.bot_data["users"][user_id]["nombre"],
+                                                context.bot_data["users"][user_id]["crepes"],
+                                                (context.bot_data["users"][user_id]["nombre"]-1)*prix)
+    except : return context.bot_data["users"][user_id]["prénom"]
 
 ##########################
 

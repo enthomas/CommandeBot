@@ -9,7 +9,7 @@ from data import *
 from registration import *
 from functions import *
 from commande import *
-from adresse import *
+from livreurs import *
 
 # Slightly modify the Bot class to use a MessageQueue in order to avoid
 # Telegram's flood limits (30 msg/sec)
@@ -93,6 +93,29 @@ commande_handler = ConversationHandler(
 dispatcher.add_handler(commande_handler)
 
 dispatcher.add_handler(CallbackQueryHandler(button))
+
+annule_handler = ConversationHandler(
+    entry_points = [CommandHandler("annuler", annuler)],
+    states = {ANNULE : [stop_handler, MessageHandler(Filters.text, annule)]},
+    fallbacks = [stop_handler],
+    name = "annule_handler",
+    persistent = True)
+
+dispatcher.add_handler(annule_handler)
+
+livraison_handler = ConversationHandler(
+    entry_points = [CommandHandler("livraison", livraison)],
+    states = {LIVB : [stop_handler, MessageHandler(Filters.text, livB)],
+              LIVT : [stop_handler, MessageHandler(Filters.text, livT)],
+              CONFB : [stop_handler, MessageHandler(Filters.text, confB)],
+              CONFT : [stop_handler, MessageHandler(Filters.text, confT)]},
+    fallbacks = [stop_handler],
+    name = "livraison_handler",
+    persistent = True)
+
+dispatcher.add_handler(livraison_handler)
+
+dispatcher.add_handler(CommandHandler("recap_team", recap_team))
 
 #autres éléments communs à tous les bots
 updater.start_polling()
