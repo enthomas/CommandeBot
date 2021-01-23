@@ -196,3 +196,76 @@ def abandT(update, context):
         return ConversationHandler.END
     else :
         return abandonner(update, context)
+
+def annulation(update, context):
+    user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
+
+    if not context.bot_data["users"][user_id]["admin"] :
+        update.message.reply_text(tututut)
+    else :
+        if len(context.bot_data["commandes"]) > 0 :
+            keyboard = [[KeyboardButton(livraison_to_string(id, context))] for id in context.bot_data["commandes"]]
+            update.message.reply_text("Quelle commande on annule ?", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
+            return ANNULE
+        else :
+            update.message.reply_text(lst_vide)
+            return ConversationHandler.END
+
+def annul(update, context):
+    user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
+    user_input = update.message.text.strip().replace("\n", " ")
+
+    lst = [livraison_to_string(id, context) for id in context.bot_data["commandes"]]
+    if not user_input in lst :
+        update.message.reply_text(invalid_input)
+        return ANNULE
+    ind = lst.index(user_input)
+    id_user = context.bot_data["commandes"][ind]
+
+    update.message.reply_text(commande_to_string(context.bot_data["users"][id_user]))
+    keyboard = [[KeyboardButton(choix)] for choix in ["Oui ({})".format(id_user), "Non ({})".format(id_user)]]
+    update.message.reply_text("C'est bien cette commande ?", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
+    return ANNULE2
+
+def annul2(update, context):
+    user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
+    user_input = update.message.text.strip().replace("\n", " ")
+
+    if user_input[:3] not in ["Oui", "Non"] :
+        update.message.reply_text(invalid_input)
+        return ANNULE2
+    id_user = int(user_input[5:-1])
+
+    if user_input[:3] == "Oui" :
+        context.bot_data["users"][id_user]["commande"] = False
+        context.bot_data["users"][id_user]["répartit"] = False
+        context.bot_data["commandes"].remove(id_user)
+        if id_user in context.bot_data["non_attribuees"]:
+            context.bot_data["non_attribuees"].remove(id_user)
+        if id_user in context.bot_data["attribuees_teamB"] :
+            context.bot_data["attribuees_teamB"].remove(id_user)
+        if id_user in context.bot_data["attribuees_teamT"] :
+            context.bot_data["attribuees_teamT"].remove(id_user)
+        context.bot_data["nb_commandes"] -= context.bot_data["users"][id_user]["nombre"]
+        context.bot.send_message(chat_id=id_BDAmour, text=annulation_to_string(context.bot_data["users"][id_user]))
+
+        keyboard = [[KeyboardButton(raison + " (" + str(id_user) + ")")] for raison in raisons]
+        update.message.reply_text("La raison ?", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
+        return ANNULE3
+    else :
+        return annulation(update, context)
+
+def annul3(update, context):
+    user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
+    user_input = update.message.text.strip().replace("\n", " ")
+
+    if user_input[:9] not in raisons :
+        update.message.reply_text(invalid_input)
+        return ANNULE3
+
+    id_user = int(user_input[11:-1])
+    context.bot.send_message(chat_id=id_user, text=raisons[user_input[:9]])

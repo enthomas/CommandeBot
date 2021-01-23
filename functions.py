@@ -70,10 +70,11 @@ def repart_to_string(user_data):
     except : return user_data["prénom"]
 
 def commande_to_string(user_data):
-    try : return "{} {}\n--> {}€\n{}\n\n{} {}\n{}\nTel : {}".format(user_data["nombre"],
+    try : return "{} {}\n--> {}€\n{}\nNote : {}\n\n{} {}\n{}\nTel : {}".format(user_data["nombre"],
                                                       user_data["crepes"],
                                                       (user_data["nombre"]-1)*prix,
                                                       user_data["créneau"],
+                                                      user_data["précision"],
                                                       user_data["prénom"],
                                                       user_data["nom"],
                                                       adresse_to_string(user_data),
@@ -81,7 +82,7 @@ def commande_to_string(user_data):
     except : return user_data["prénom"]
 
 def annulation_to_string(user_data):
-    try : return "{} {} a annulé sa commande ({} {})".format(user_data["prénom"],
+    try : return "La commande de {} {} a été annulée ({} {})".format(user_data["prénom"],
                                                              user_data["nom"],
                                                              user_data["nombre"],
                                                              user_data["crepes"])
@@ -131,6 +132,14 @@ def see_attribB(update, context):
             print(id)
     return ConversationHandler.END
 
+def see_attribT(update, context):
+    user_id = update.effective_user.id
+    if context.bot_data["users"][user_id]["admin"] == True :
+        print("Team T :")
+        for id in context.bot_data["attribuees_teamT"] :
+            print(id)
+    return ConversationHandler.END
+
 def photoecho(update, context):
     #Displays infos about a received photo in the console, no user feedback
 
@@ -153,6 +162,7 @@ def photoecho(update, context):
 def carte(update, context):
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
+    update.message.reply_text("Cette carte sert à vous donner une idée du périmètre où on peut livrer, elle ne se veut pas complètement contractuelle. On est principalement basé à côté de l'école et à la Victoire, donc on se réserve le droit de refuser des commandes trop éloignées 😉")
     context.bot.send_photo(chat_id=chat_id, photo=map)
     return ConversationHandler.END
 

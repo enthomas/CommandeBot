@@ -56,6 +56,15 @@ def moment(update, context):
         return CRENEAU
     context.bot_data["users"][user_id]["créneau"] = user_input
 
+    update.message.reply_text("As-tu une précision à nous faire sur cette commande ?")
+    return PRECISION
+
+def precision(update, context):
+    user_id = update.effective_user.id
+    user_input = update.message.text.strip().replace("\n", " ")
+
+    context.bot_data["users"][user_id]["précision"] = user_input
+
     update.message.reply_text("Maintenant on a besoin de savoir où livrer.")
     update.message.reply_text(ask_adresse[RUE])
     return RUE

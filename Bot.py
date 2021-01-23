@@ -81,6 +81,7 @@ commande_handler = ConversationHandler(
     states = {CREPES : [stop_handler, MessageHandler(Filters.text, crepes)],
               NB : [stop_handler, MessageHandler(Filters.text, quantite)],
               CRENEAU : [stop_handler, MessageHandler(Filters.text, moment)],
+              PRECISION : [stop_handler, MessageHandler(Filters.text, precision)],
               RUE : [stop_handler, MessageHandler(Filters.text, rue)],
               CP : [stop_handler, MessageHandler(Filters.text, code_postal)],
               VILLE : [stop_handler, MessageHandler(Filters.text, ville)],
@@ -127,6 +128,17 @@ abandon_handler = ConversationHandler(
 
 dispatcher.add_handler(abandon_handler)
 
+annulation_handler = ConversationHandler(
+    entry_points = [CommandHandler("annulation", annulation)],
+    states = {ANNULE : [stop_handler, MessageHandler(Filters.text, annul)],
+              ANNULE2 : [stop_handler, MessageHandler(Filters.text, annul2)],
+              ANNULE3 : [stop_handler, MessageHandler(Filters.text, annul3)]},
+    fallbacks = [stop_handler],
+    name = "annulation_handler",
+    persistent = True)
+
+dispatcher.add_handler(annulation_handler)
+
 dispatcher.add_handler(CommandHandler("recap_team", recap_team))
 dispatcher.add_handler(CommandHandler("carte", carte))
 dispatcher.add_handler(CommandHandler("help", help))
@@ -139,6 +151,7 @@ dispatcher.add_handler(CommandHandler("init", init_commande))
 dispatcher.add_handler(CommandHandler("see_commandes", see_commandes))
 dispatcher.add_handler(CommandHandler("see_nonattrib", see_nonattrib))
 dispatcher.add_handler(CommandHandler("see_attribB", see_attribB))
+dispatcher.add_handler(CommandHandler("see_attribT", see_attribT))
 dispatcher.add_handler(MessageHandler(Filters.photo, photoecho))
 
 #autres éléments communs à tous les bots
