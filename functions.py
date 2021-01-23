@@ -41,6 +41,7 @@ def rep2_admin(update, context):
         update.message.reply_text(invalid_input)
         return ADMIN2
     context.bot_data["users"][user_id]["team"] = user_input
+    update.message.reply_text("C'est bon !")
     return ConversationHandler.END
 
 def adresse_to_string(user_data):
@@ -58,6 +59,7 @@ def init_commande(update, context):
         context.bot_data["attribuees_teamB"] = []
         context.bot_data["attribuees_teamT"] = []
         context.bot_data["livrees"] = []
+        update.message.reply_text("C'est bon !")
     return ConversationHandler.END
 
 def repart_to_string(user_data):
@@ -67,12 +69,13 @@ def repart_to_string(user_data):
     except : return user_data["prénom"]
 
 def commande_to_string(user_data):
-    try : return "{} {}\n--> {}€\n\n{} {}\n{}".format(user_data["nombre"],
+    try : return "{} {}\n--> {}€\n\n{} {}\n{}\nTel : {}".format(user_data["nombre"],
                                                       user_data["crepes"],
                                                       (user_data["nombre"]-1)*prix,
                                                       user_data["prénom"],
                                                       user_data["nom"],
-                                                      adresse_to_string(user_data))
+                                                      adresse_to_string(user_data),
+                                                      user_data["téléphone"])
     except : return user_data["prénom"]
 
 def annulation_to_string(user_data):
@@ -82,7 +85,7 @@ def annulation_to_string(user_data):
                                                              user_data["crepes"])
     except : return user_data["prénom"]
 
-def livraison_to_string(user_id):
+def livraison_to_string(user_id, context):
     try : return "{} {} ({} {} --> {}€)".format(context.bot_data["users"][user_id]["prénom"],
                                                 context.bot_data["users"][user_id]["nom"],
                                                 context.bot_data["users"][user_id]["nombre"],
@@ -90,8 +93,40 @@ def livraison_to_string(user_id):
                                                 (context.bot_data["users"][user_id]["nombre"]-1)*prix)
     except : return context.bot_data["users"][user_id]["prénom"]
 
-##########################
+def info(update, context):
+    user_id = update.effective_user.id
+    if context.bot_data["users"][user_id]["admin"] == True :
+        for info in context.bot_data["users"][user_id] :
+            print(context.bot_data["users"][user_id][info])
+    return ConversationHandler.END
 
+def see_commandes(update, context):
+    user_id = update.effective_user.id
+    if context.bot_data["users"][user_id]["admin"] == True :
+        print("Commandes :")
+        for id in context.bot_data["commandes"] :
+            print(id)
+    return ConversationHandler.END
+
+def see_nonattrib(update, context):
+    user_id = update.effective_user.id
+    if context.bot_data["users"][user_id]["admin"] == True :
+        print("Non attrib :")
+        for id in context.bot_data["non_attribuees"] :
+            print(id)
+    return ConversationHandler.END
+
+def see_attribB(update, context):
+    user_id = update.effective_user.id
+    if context.bot_data["users"][user_id]["admin"] == True :
+        print("Team B :")
+        for id in context.bot_data["attribuees_teamB"] :
+            print(id)
+    return ConversationHandler.END
+
+
+##########################
+"""
 def remove_accents(input_str):
     nfkd_form = unicodedata.normalize('NFKD', input_str)
     return u"".join([c for c in nfkd_form if not unicodedata.combining(c)])
@@ -177,7 +212,7 @@ def pause(update, context):
     return ConversationHandler.END
 
 def photoecho(update, context):
-    """Displays infos about a received photo in the console, no user feedback"""
+    #Displays infos about a received photo in the console, no user feedback
 
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
@@ -196,7 +231,7 @@ def photoecho(update, context):
     # context.bot.send_photo(chat_id, fid)
 
 def audioecho(update, context):
-    """Displays infos about a received audio in the console, no user feedback"""
+    #Displays infos about a received audio in the console, no user feedback
 
     user_id = update.effective_user.id
 
@@ -205,7 +240,7 @@ def audioecho(update, context):
     print("file_id : "+update.message.effective_attachment.file_id)
 
 def videoecho(update, context):
-    """Displays infos about a received video in the console, no user feedback"""
+    #Displays infos about a received video in the console, no user feedback
 
     user_id = update.effective_user.id
 
@@ -219,3 +254,4 @@ def transfer(update, context):
     user_id = update.effective_user.id
     user_input = update.message.text.strip().replace("\n", " ")
     context.bot.send_message(chat_id=id_BDAmour, text=context.bot_data["users"][user_id]["prénom"]+" envoie :\n"+user_input)
+"""

@@ -12,11 +12,11 @@ def livraison(update, context):
     if not context.bot_data["users"][user_id]["admin"] :
         update.message.reply_text("Tututut, cette commande n'est pas faite pour toi 😜\nEssaye plutôt \help pour savoir ce que tu peux faire")
     elif context.bot_data["users"][user_id]["team"] == "Team Bordeaux" :
-        keyboard = [[KeyboardButton(livraison_to_string(id))] for id in context.bot_data["attribuees_teamB"]]
+        keyboard = [[KeyboardButton(livraison_to_string(id, context))] for id in context.bot_data["attribuees_teamB"]]
         update.message.reply_text("Qui as-tu livré ?", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
         return LIVB
     else :
-        keyboard = [[KeyboardButton(livraison_to_string(id))] for id in context.bot_data["attribuees_teamT"]]
+        keyboard = [[KeyboardButton(livraison_to_string(id, context))] for id in context.bot_data["attribuees_teamT"]]
         update.message.reply_text("Qui as-tu livré ?", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
         return LIVT
 
@@ -25,7 +25,7 @@ def livB(update, context):
     chat_id = update.effective_chat.id
     user_input = update.message.text.strip().replace("\n", " ")
 
-    lst = [livraison_to_string(id) for id in context.bot_data["attribuees_teamB"]]
+    lst = [livraison_to_string(id, context) for id in context.bot_data["attribuees_teamB"]]
     if not user_input in lst :
         update.message.reply_text(invalid_input)
         return LIVB
@@ -45,22 +45,23 @@ def confB(update, context):
     if user_input[:3] not in ["Oui", "Non"] :
         update.message.reply_text(invalid_input)
         return CONFB
-    id_user = user_input[5:-1]
+    id_user = int(user_input[5:-1])
 
     if user_input[:3] == "Oui" :
         context.bot_data["attribuees_teamB"].remove(id_user)
         context.bot_data["livrees"].append(id_user)
         context.bot_data["users"][id_user]["livre"] = True
+        update.message.reply_text("Nickel c'est noté !")
         return ConversationHandler.END
     else :
-        return LIVB
+        return livraison(update, context)
 
 def livT(update, context):
     user_id = update.effective_user.id
     chat_id = update.effective_chat.id
     user_input = update.message.text.strip().replace("\n", " ")
 
-    lst = [livraison_to_string(id) for id in context.bot_data["attribuees_teamT"]]
+    lst = [livraison_to_string(id, context) for id in context.bot_data["attribuees_teamT"]]
     if not user_input in lst :
         update.message.reply_text(invalid_input)
         return LIVT
@@ -80,12 +81,13 @@ def confT(update, context):
     if user_input[:3] not in ["Oui", "Non"] :
         update.message.reply_text(invalid_input)
         return CONFT
-    id_user = user_input[5:-1]
+    id_user = int(user_input[5:-1])
 
     if user_input[:3] == "Oui" :
         context.bot_data["attribuees_teamT"].remove(id_user)
         context.bot_data["livrees"].append(id_user)
         context.bot_data["users"][id_user]["livre"] = True
+        update.message.reply_text("Nickel c'est noté !")
         return ConversationHandler.END
     else :
         return LIVT

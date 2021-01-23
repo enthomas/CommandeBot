@@ -72,8 +72,6 @@ def promo(update, context):
         return PROMO
     context.bot_data["users"][user_id]["promo"] = user_input
     update.message.reply_text(ask[FIN])
-    context.bot_data["users"][user_id]["enregistrement"] = time.time()
-    context.bot_data["users"][user_id]["fin"] = time.time()-2
 
     user_str = user_id_str(context.bot_data["users"][user_id])
     update.message.reply_text(recap_data + "\n" + user_str + "\n" + incorrect_data)

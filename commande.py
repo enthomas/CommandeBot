@@ -14,7 +14,7 @@ def commander(update, context):
         update.message.reply_text("Quelles crêpes veux tu ? 😀", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
         return CREPES
     else :
-        update.message.reply_text(already_commande, reply_markup=ReplyKeyboardRemove)
+        update.message.reply_text(already_commande)
         return ConversationHandler.END
 
 def crepes(update, context):
@@ -38,7 +38,7 @@ def quantite(update, context):
         update.message.reply_text(invalid_input)
         return NB
     context.bot_data["users"][user_id]["nombre"] = user_input
-    update.message.reply_text("Ca fera " + str((user_input-1)*prix) + "€ à régler au moment de la livraison 😊", reply_markup=ReplyKeyboardRemove))
+    update.message.reply_text("Ca fera " + str((user_input-1)*prix) + "€ à régler au moment de la livraison 😊")
 
     keyboard = [[KeyboardButton(creno)] for creno in creneaux]
     update.message.reply_text("Quand est ce que tu veux qu'on te livre ? (on fera au mieux)", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
@@ -53,7 +53,7 @@ def moment(update, context):
         return CRENEAU
     context.bot_data["users"][user_id]["créneau"] = user_input
 
-    update.message.reply_text("Maintenant on a besoin de savoir où livrer.", reply_markup=ReplyKeyboardRemove)
+    update.message.reply_text("Maintenant on a besoin de savoir où livrer.")
     update.message.reply_text(ask_adresse[RUE])
     return RUE
 
@@ -111,7 +111,7 @@ def numero(update, context):
     user_id = update.effective_user.id
     chat_id = update.effective_chat.id
     user_input = update.message.text.strip().replace("\n", " ")
-
+    
     if user_input == "":
         update.message.reply_text(invalid_input)
         return NUM
@@ -186,9 +186,12 @@ def annule(update, context):
         context.bot_data["users"][user_id]["commande"] = False
         context.bot_data["users"][user_id]["répartit"] = False
         context.bot_data["commandes"].remove(user_id)
-        context.bot_data["non_attribuees"].remove(user_id)
-        context.bot_data["attribuees_teamB"].remove(user_id)
-        context.bot_data["attribuees_teamT"].remove(user_id)
+        if user_id in context.bot_data["non_attribuees"]:
+            context.bot_data["non_attribuees"].remove(user_id)
+        if user_id in context.bot_data["attribuees_teamB"] :
+            context.bot_data["attribuees_teamB"].remove(user_id)
+        if user_id in context.bot_data["attribuees_teamT"] :
+            context.bot_data["attribuees_teamT"].remove(user_id)
         update.message.reply_text("C'est bon ta commande est annulée")
         context.bot.send_message(chat_id=id_BDAmour, text=annulation_to_string(context.bot_data["users"][user_id]), reply_markup=ReplyKeyboardRemove())
         return ConversationHandler.END

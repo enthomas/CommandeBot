@@ -117,11 +117,17 @@ dispatcher.add_handler(livraison_handler)
 
 dispatcher.add_handler(CommandHandler("recap_team", recap_team))
 
+dispatcher.add_handler(CommandHandler("info", info))
+dispatcher.add_handler(CommandHandler("init", init_commande))
+dispatcher.add_handler(CommandHandler("see_commandes", see_commandes))
+dispatcher.add_handler(CommandHandler("see_nonattrib", see_nonattrib))
+dispatcher.add_handler(CommandHandler("see_attribB", see_attribB))
+
 #autres éléments communs à tous les bots
 updater.start_polling()
 updater.idle()
 #############
-
+"""
 today_handler = ConversationHandler(
     entry_points = [CommandHandler("today", today)],
     states = {ANECDOTE : [stop_handler, MessageHandler(Filters.text, anecdote)],
@@ -175,7 +181,7 @@ dispatcher.add_handler(seevideo_handler)
 
 
 def stop_and_restart():
-    """Gracefully stop the Updater and replace the current process with a new one"""
+    #Gracefully stop the Updater and replace the current process with a new one
     updater.stop()
     os.execl(sys.executable, *sys.argv, *sys.argv)
 
@@ -192,3 +198,4 @@ dispatcher.add_handler(MessageHandler(Filters.photo, photoecho))
 dispatcher.add_handler(MessageHandler(Filters.audio, audioecho))
 dispatcher.add_handler(MessageHandler(Filters.video, videoecho))
 dispatcher.add_handler(MessageHandler(Filters.text, transfer))
+"""

@@ -3,7 +3,7 @@ already_started = "Je vois que tu es déjà inscrit, utilises plutôt la command
 ask_data = "Avant de commencer on a besoin de savoir qui tu es ! 😉"
 recap_data = "On récapitule :"
 incorrect_data = "Tu peux recommencer avec la commande /start_again s'il y a une erreur."
-finish_start = ""
+finish_start = "Merci, faut que je rajoute des infos"
 success_stop = "Ok on fait une pause. "
 invalid_input = "Je n'ai pas compris, essaie encore."
 inform_stop = "Tu peux annuler à tout moment avec la commande /stop"
@@ -36,7 +36,7 @@ ask = [ "Quel est ton prénom ?",
 
 PRENOM, NOM, PROMO, FIN = range(4)
 
-ask_adresse = [ "Ton adresse ? (numéro + nom de rue)",
+ask_adresse = [ "","","","Ton adresse ? (numéro + nom de rue)",
                 "Le code postal ?",
                 "La ville ?",
                 "Des compléments si besoin ? (étage, numéro d'appt...)",
@@ -49,7 +49,7 @@ possibilités = ["Crêpes au chocolat 🍫", "Crêpes au sucre 🍭", "Crêpes �
 creneaux = ["13h-15h", "15h-17h"]
 prix = 0.5
 
-CREPES, NB, CRENEAU, RUE, CP, VILLE, COMP, NUM = range(8)
+CREPES, NB, CRENEAU, RUE, CP, VILLE, COMP, NUM, NOTE = range(9)
 
 id_BDAmour = -430587684
 ADMIN, ADMIN2 = range(2)
