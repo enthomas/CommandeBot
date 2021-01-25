@@ -50,7 +50,7 @@ ask_adresse = [ "","","","","Ton adresse ? (numéro + nom de rue)",
                 "Et un numéro de téléphone pour quand on est en bas de chez toi (promis on les garde pas) ?",
                 "Parfait je note tout ça !"]
 
-promos = [ "1A", "2A", "3A"]
+promos = [ "1A", "2A", "3A", "Anciens"]
 teams = ["Team Bordeaux", "Team Talence"]
 possibilités = ["Crêpes au chocolat 🍫", "Crêpes au sucre 🍭", "Crêpes à la confiture 🍑", "Crêpes au miel 🍯", "Crêpes natures 😇"]
 creneaux = ["13h-15h30", "15h30-17h30"]
@@ -60,6 +60,7 @@ photo_team = "AgACAgQAAxkBAAIiVmAMLB2gt6IOqmW8XfUNI4PqFE8PAAJ2tDEbc2JhUEsbyuV3jF
 map = "AgACAgQAAxkBAAIka2AMnsZffvYfTt9TeyM6qg_w6aDTAALvtDEbc2JhUKYUAcrWHbdnHbZJJ10AAwEAAwIAA3gAA9eJBAABHgQ"
 raisons = {"Trop loin" : "Désolé nous avons du annuler ta commande car tu te trouves trop loin de nous pour qu'on puisse te livrer 😞\nCependant tu peux toujours re /commander si tu es motivé pour te déplacer pour récupérer ta commande.\nMerci de ta compréhension 😊",
            "Trop tard" : "Désolé nous avons du annuler ta commande car il est trop tard et nous ne pensons pas avoir le temps de te livrer avant le couvre feu 😞",
+           "Pas payé-" : "Désolé mais comme tu n'as pas payé, nous annulons ta commande 🤷",
            "Autre----" : "Désolé nous avons du annuler ta commande, hésites pas à contacter Enora si tu veux plus d'info là dessus"}
 CREPES, NB, CRENEAU, PRECISION, RUE, CP, VILLE, COMP, NUM, NOTE = range(10)
 

@@ -153,18 +153,27 @@ def validation(update, context):
     id_user = int(valeur[3:])
 
     if user_id in context.bot_data["users"]:
-        if context.bot_data["users"][user_id]["admin"] and context.bot_data["users"][user_id]["team"] == "Team Bordeaux" :
+        if id_user not in context.bot_data["attribuees_teamB"] and id_user not in context.bot_data["attribuees_teamT"] :
+            if context.bot_data["users"][user_id]["admin"] and context.bot_data["users"][user_id]["team"] == "Team Bordeaux" :
+                query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup([]))
+                context.bot.send_message(chat_id=id_BDAmour, text="La team Bordeaux s'occupe de cette commande")
+                if context.bot_data["users"][id_user]["créneau"] == creneaux[-1] :
+                    context.bot_data["attribuees_teamB"].append(id_user)
+                else :
+                    context.bot_data["attribuees_teamB"].insert(0, id_user)
+                context.bot_data["non_attribuees"].remove(id_user)
+                context.bot_data["users"][id_user]["répartit"] = True
+            elif context.bot_data["users"][user_id]["admin"] and context.bot_data["users"][user_id]["team"] == "Team Talence" :
+                query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup([]))
+                context.bot.send_message(chat_id=id_BDAmour, text="La team Talence s'occupe de cette commande")
+                if context.bot_data["users"][id_user]["créneau"] == creneaux[-1] :
+                    context.bot_data["attribuees_teamT"].append(id_user)
+                else :
+                    context.bot_data["attribuees_teamT"].insert(0, id_user)
+                context.bot_data["non_attribuees"].remove(id_user)
+                context.bot_data["users"][id_user]["répartit"] = True
+        else :
             query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup([]))
-            context.bot.send_message(chat_id=id_BDAmour, text="La team Bordeaux s'occupe de cette commande")
-            context.bot_data["attribuees_teamB"].append(id_user)
-            context.bot_data["non_attribuees"].remove(id_user)
-            context.bot_data["users"][id_user]["répartit"] = True
-        elif context.bot_data["users"][user_id]["admin"] and context.bot_data["users"][user_id]["team"] == "Team Talence" :
-            query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup([]))
-            context.bot.send_message(chat_id=id_BDAmour, text="La team Talence s'occupe de cette commande")
-            context.bot_data["attribuees_teamT"].append(id_user)
-            context.bot_data["non_attribuees"].remove(id_user)
-            context.bot_data["users"][id_user]["répartit"] = True
 
 def button(update, context):
     query = update.callback_query
