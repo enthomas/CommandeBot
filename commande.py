@@ -22,14 +22,14 @@ def commander(update, context):
 
 def crepes(update, context):
     user_id = update.effective_user.id
-    user_input = update.message.text[:30].strip().replace("\n", " ")
+    user_input = update.message.text.strip().replace("\n", " ")
 
     if user_input not in possibilités :
         update.message.reply_text(invalid_input)
         return CREPES
     context.bot_data["users"][user_id]["crepes"] = user_input
 
-    keyboard = [[KeyboardButton(nb)] for nb in range(2,6)]
+    keyboard = [[KeyboardButton(nb)] for nb in range(2,11)]
     update.message.reply_text("Combien ? (En comptant la crêpe gratuite 😉)", reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
     return NB
 
@@ -37,7 +37,7 @@ def quantite(update, context):
     user_id = update.effective_user.id
     user_input = int(update.message.text[:30].strip().replace("\n", " "))
 
-    if user_input<2 or user_input>5 :
+    if user_input<2 or user_input>10 :
         update.message.reply_text(invalid_input)
         return NB
     context.bot_data["users"][user_id]["nombre"] = user_input
@@ -56,7 +56,7 @@ def moment(update, context):
         return CRENEAU
     context.bot_data["users"][user_id]["créneau"] = user_input
 
-    update.message.reply_text("As-tu une précision à nous faire sur cette commande ?")
+    update.message.reply_text("As-tu une précision à nous faire sur cette commande ?", reply_markup=ReplyKeyboardRemove())
     return PRECISION
 
 def precision(update, context):

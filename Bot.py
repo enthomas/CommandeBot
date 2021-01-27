@@ -152,6 +152,7 @@ dispatcher.add_handler(CommandHandler("see_commandes", see_commandes))
 dispatcher.add_handler(CommandHandler("see_nonattrib", see_nonattrib))
 dispatcher.add_handler(CommandHandler("see_attribB", see_attribB))
 dispatcher.add_handler(CommandHandler("see_attribT", see_attribT))
+dispatcher.add_handler(CommandHandler("see_nb_commandes", see_nb_commandes))
 dispatcher.add_handler(MessageHandler(Filters.photo, photoecho))
 
 #autres éléments communs à tous les bots

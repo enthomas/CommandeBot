@@ -11,6 +11,7 @@ def livraison(update, context):
 
     if not context.bot_data["users"][user_id]["admin"] :
         update.message.reply_text(tututut)
+        return ConversationHandler.END
     elif context.bot_data["users"][user_id]["team"] == "Team Bordeaux" :
         if len(context.bot_data["attribuees_teamB"]) > 0 :
             keyboard = [[KeyboardButton(livraison_to_string(id, context))] for id in context.bot_data["attribuees_teamB"]]
@@ -132,6 +133,7 @@ def abandonner(update, context):
 
     if not context.bot_data["users"][user_id]["admin"] :
         update.message.reply_text(tututut)
+        return ConversationHandler.END
     elif context.bot_data["users"][user_id]["team"] == "Team Bordeaux" :
         if len(context.bot_data["attribuees_teamB"])  > 0 :
             keyboard = [[KeyboardButton(livraison_to_string(id, context))] for id in context.bot_data["attribuees_teamB"]]
@@ -203,6 +205,7 @@ def annulation(update, context):
 
     if not context.bot_data["users"][user_id]["admin"] :
         update.message.reply_text(tututut)
+        return ConversationHandler.END
     else :
         if len(context.bot_data["commandes"]) > 0 :
             keyboard = [[KeyboardButton(livraison_to_string(id, context))] for id in context.bot_data["commandes"]]

@@ -74,7 +74,7 @@ def promo(update, context):
     update.message.reply_text(ask[FIN])
 
     user_str = user_id_str(context.bot_data["users"][user_id])
-    update.message.reply_text(recap_data + "\n" + user_str + "\n" + incorrect_data)
+    update.message.reply_text(recap_data + "\n" + user_str + "\n" + incorrect_data, reply_markup=ReplyKeyboardRemove())
     update.message.reply_text(finish_start)
     print(context.bot_data["users"][user_id]["prénom"] + ' ' + context.bot_data["users"][user_id]["nom"] + " s'est inscrit.\n")
     #context.bot.send_message(chat_id=id_BDAmour, text=context.bot_data["users"][user_id]["prénom"] + ' ' + context.bot_data["users"][user_id]["nom"] + " s'est inscrit.")

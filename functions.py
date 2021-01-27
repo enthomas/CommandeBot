@@ -140,6 +140,10 @@ def see_attribT(update, context):
             print(id)
     return ConversationHandler.END
 
+def see_nb_commandes(update, context):
+    update.message.reply_text(context.bot_data["nb_commandes"])
+    return ConversationHandler.END
+
 def photoecho(update, context):
     #Displays infos about a received photo in the console, no user feedback
 
